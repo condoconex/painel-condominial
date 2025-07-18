@@ -1,0 +1,25 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Condo BI – Painel Multi-Condomínios</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="painelPlugavel" style="max-width:1420px;margin:auto;">
+    <!-- MENU DE ABAS/PAINÉIS -->
+    <nav id="menuAbas"></nav>
+    <!-- CONTEÚDO DOS DASHBOARDS -->
+    <section id="dashboardGeral" class="abaPlugavel"></section>
+    <section id="dashboardFluxo" class="abaPlugavel" style="display:none"></section>
+    <section id="dashboardHeatmap" class="abaPlugavel" style="display:none"></section>
+    <section id="dashboardComparativo" class="abaPlugavel" style="display:none"></section>
+    <section id="dashboardTimeline" class="abaPlugavel" style="display:none"></section>
+  </div>
+  <script src="js/chart.min.js"></script>
+  <script src="js/multicondo.js"></script>
+  <script src="js/dashboards.js"></script>
+</body>
+</html>
