@@ -1,84 +1,61 @@
-/* css/style.css */
-body {
-  background: #f2f5fa;
-  font-family: 'Montserrat', Segoe UI, Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
-#painelPlugavel {
-  box-shadow: 0 20px 64px #0057ff1a;
-  border-radius: 24px;
-  background: #fff;
-  padding: 32px 18px 40px 18px;
-  margin-top: 36px;
-}
-nav {
-  margin-bottom: 24px;
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-.btnAbaPlug {
-  background: #e3f2fd;
-  border: none;
-  padding: 8px 22px;
-  border-radius: 8px;
-  font-weight: 600;
-  color: #236ee8;
-  font-size: 1.1em;
-  box-shadow: 0 1px 5px #aed;
-  transition: background .22s, color .22s;
-  cursor: pointer;
-}
-.btnAbaPlug.active {
-  background: #236ee8;
-  color: #fff;
-}
-.abaPlugavel {
-  animation: fadeInPlug .6s;
-}
-@keyframes fadeInPlug {
-  from { opacity: 0; transform: translateY(22px);}
-  to { opacity: 1; transform: translateY(0);}
-}
-label {
-  margin-right: 24px;
-  font-weight: 500;
-}
-input[type="text"], input[type="number"], input[type="date"], select {
-  border: 1px solid #ccd8f2;
-  border-radius: 5px;
-  padding: 5px 9px;
-  font-size: 1em;
-  margin-left: 7px;
-  margin-right: 8px;
-  background: #f6f9ff;
-  transition: box-shadow .18s;
-}
-input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus, select:focus {
-  outline: none;
-  box-shadow: 0 2px 8px #236ee855;
-  border-color: #236ee8;
-  background: #e3f0ff;
-}
-canvas {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 12px #236ee80d;
-  margin-bottom: 10px;
-}
-button {
-  cursor: pointer;
-}
-@media (max-width: 900px) {
-  #painelPlugavel {
-    padding: 16px 5px 16px 5px;
+// js/multicondo.js
+// Dados de exemplo utilizados pelos dashboards
+
+window.multiCondo = {
+  "Condom\u00ednio Exemplo": {
+    dataInicio: "2024-01", // ano-m\u00eas inicial
+    dataFinal: "2024-12",   // ano-m\u00eas final
+    percInad: 5,            // percentual de inadimpl\u00eancia
+    receitas: [             // receitas fixas mensais
+      { men: 2000 }
+    ],
+    despesas: [             // despesas fixas mensais
+      { men: 500, cat: "Manuten\u00e7\u00e3o" },
+      { men: 300, cat: "Luz" }
+    ],
+    timeline: []            // eventos exibidos na aba de timeline
   }
-  nav {
-    gap: 7px;
+};
+
+// Condom\u00ednio exibido por padr\u00e3o
+window.atual = "Condom\u00ednio Exemplo";
+
+// Retorna lista de meses entre dataInicio e dataFinal no formato YYYY-MM
+window.getPeriodoMeses = function(inicio, fim) {
+  if (!inicio || !fim) return [];
+  const meses = [];
+  let d = new Date(inicio + "-01");
+  const end = new Date(fim + "-01");
+  while (d <= end) {
+    meses.push(d.toISOString().slice(0, 7));
+    d.setMonth(d.getMonth() + 1);
   }
-  .btnAbaPlug {
-    padding: 7px 8px;
-    font-size: 0.97em;
-  }
-}
+  return meses;
+};
+
+// Salva o objeto multiCondo no localStorage
+window.salvarMulti = function() {
+  try {
+    localStorage.setItem("multiCondoData", JSON.stringify(window.multiCondo));
+  } catch (e) {}
+};
+
+// Recupera dados salvos anteriormente do localStorage
+window.carregarMulti = function() {
+  try {
+    const dados = localStorage.getItem("multiCondoData");
+    if (dados) {
+      window.multiCondo = JSON.parse(dados);
+    }
+  } catch (e) {}
+};
+
+// Ao carregar o documento, restaura dados e atualiza todos os dashboards
+window.addEventListener("DOMContentLoaded", () => {
+  window.carregarMulti();
+  if (typeof dashboardGeralUpdate === "function") dashboardGeralUpdate();
+  if (typeof dashboardFluxoUpdate === "function") dashboardFluxoUpdate();
+  if (typeof dashboardHeatmapUpdate === "function") dashboardHeatmapUpdate();
+  if (typeof dashboardComparativoUpdate === "function") dashboardComparativoUpdate();
+  if (typeof dashboardTimelineUpdate === "function") dashboardTimelineUpdate();
+});
