@@ -50,9 +50,41 @@ window.carregarMulti = function() {
   } catch (e) {}
 };
 
+// Cria menu superior e controla a troca de abas
+window.criarMenuAbas = function() {
+  const definicoes = [
+    { id: "dashboardGeral", label: "Geral", update: window.dashboardGeralUpdate },
+    { id: "dashboardFluxo", label: "Fluxo", update: window.dashboardFluxoUpdate },
+    { id: "dashboardHeatmap", label: "Heatmap", update: window.dashboardHeatmapUpdate },
+    { id: "dashboardComparativo", label: "Comparativo", update: window.dashboardComparativoUpdate },
+    { id: "dashboardTimeline", label: "Timeline", update: window.dashboardTimelineUpdate }
+  ];
+  const menu = document.getElementById("menuAbas");
+  if (!menu) return;
+  menu.innerHTML = definicoes
+    .map((a, i) => `<button class="btnAbaPlug${i === 0 ? ' active' : ''}" data-aba="${a.id}">${a.label}</button>`)
+    .join("");
+  const botoes = menu.querySelectorAll("button");
+  botoes.forEach(btn => btn.addEventListener("click", () => {
+    botoes.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    definicoes.forEach(def => {
+      const sec = document.getElementById(def.id);
+      if (sec) sec.style.display = def.id === btn.dataset.aba ? "" : "none";
+    });
+    const def = definicoes.find(d => d.id === btn.dataset.aba);
+    if (def && typeof def.update === "function") def.update();
+  }));
+  definicoes.forEach((def, i) => {
+    const sec = document.getElementById(def.id);
+    if (sec) sec.style.display = i === 0 ? "" : "none";
+  });
+};
+
 // Ao carregar o documento, restaura dados e atualiza todos os dashboards
 window.addEventListener("DOMContentLoaded", () => {
   window.carregarMulti();
+  window.criarMenuAbas();
   if (typeof dashboardGeralUpdate === "function") dashboardGeralUpdate();
   if (typeof dashboardFluxoUpdate === "function") dashboardFluxoUpdate();
   if (typeof dashboardHeatmapUpdate === "function") dashboardHeatmapUpdate();
